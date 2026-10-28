@@ -14,7 +14,6 @@ import { playerEngine } from "../engine/playerEngine";
 import {
   useLyricsStore,
   useLyricsRomanization,
-  useLyricsDisplayStore,
   LyricsProviderIsland,
   braccatoThemeCss,
 } from "@/features/lyrics";
@@ -274,8 +273,7 @@ function BraccatoLyricsView({ lyrics }: BraccatoLyricsViewProps) {
     if (element) element.lyrics = lyrics;
   }, [lyrics]);
 
-  const romanization = useLyricsDisplayStore((s) => s.romanization);
-  useLyricsRomanization(elementRef, lyrics, romanization);
+  useLyricsRomanization(elementRef, lyrics);
 
   useEffect(() => {
     if (

@@ -3,6 +3,7 @@ import { injectRomanization, type LineData } from "@braccato/core";
 import { ROMANIZED_LYRICS_CLASS } from "@braccato/core/constants";
 import type { Lyric } from "@braccato/parsers";
 import { romanizeLyrics } from "../engine/lyricsRomanization";
+import { useLyricsDisplayStore } from "../store/lyricsDisplayStore";
 
 const LYRICS_LOADED_EVENT = "braccato:lyrics-loaded";
 
@@ -61,8 +62,9 @@ export function syncRomanization(
 export function useLyricsRomanization(
   elementRef: RefObject<(HTMLElement & RomanizationHost) | null>,
   lyrics: Lyric[],
-  enabled: boolean,
 ) {
+  const enabled = useLyricsDisplayStore((s) => s.romanization);
+
   useEffect(() => {
     const el = elementRef.current;
     if (!el) return;

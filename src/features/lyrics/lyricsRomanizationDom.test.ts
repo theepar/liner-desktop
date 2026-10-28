@@ -9,16 +9,35 @@ function lyric(words: string): Lyric {
   return { startTimeMs: 0, durationMs: 1000, words };
 }
 
+function fakeLine(lyricElement: HTMLElement): LineData {
+  return {
+    lyricElement,
+    parts: [],
+    time: 0,
+    duration: 1,
+    animations: [],
+    isScrolled: false,
+    isAnimationPlayStatePlaying: false,
+    accumulatedOffsetMs: 0,
+    isAnimating: false,
+    lastAnimSetupAt: 0,
+    isSelected: false,
+    height: 0,
+    position: 0,
+    decorations: new Map(),
+  };
+}
+
 function fakeView(lyrics: Lyric[]) {
   const lines = lyrics.map((l) => {
     const lyricElement = document.createElement("div");
     lyricElement.textContent = l.words;
-    return { lyricElement, parts: [], time: 0, duration: 1, animations: [] };
+    return fakeLine(lyricElement);
   });
   const scheduleLyricPositionUpdate = vi.fn();
   const el = {
     renderer: {
-      lines: lines as unknown as LineData[],
+      lines,
       scheduleLyricPositionUpdate,
     },
     isConnected: true,

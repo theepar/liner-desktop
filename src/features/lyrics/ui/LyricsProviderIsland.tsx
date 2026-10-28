@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LeftLine,
@@ -9,12 +9,9 @@ import {
   AddLine,
   MinimizeLine,
   Refresh1Line,
-  TranslateLine,
-  TranslateFill,
 } from "@mingcute/react";
 import { useLyricsStore } from "../store/lyricsStore";
-import { useLyricsDisplayStore } from "../store/lyricsDisplayStore";
-import { hasRomanizableLyrics } from "../engine/lyricsRomanization";
+import { RomanizationToggle } from "./RomanizationToggle";
 import { useTranslation } from "@/languages";
 import { cn } from "@/shared/lib";
 import { ISLAND_SURFACE } from "@/shared/ui";
@@ -42,13 +39,6 @@ export function LyricsProviderIsland() {
     adjustOffset,
     resetOffset,
   } = useLyricsStore();
-
-  const romanization = useLyricsDisplayStore((s) => s.romanization);
-  const setRomanization = useLyricsDisplayStore((s) => s.setRomanization);
-  const canRomanize = useMemo(
-    () => hasRomanizableLyrics(braccatoLyrics),
-    [braccatoLyrics],
-  );
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [offsetOpen, setOffsetOpen] = useState(false);
@@ -211,33 +201,7 @@ export function LyricsProviderIsland() {
           </button>
         )}
 
-        {canRomanize && (
-          <>
-            <div className="w-[1px] h-[14px] bg-white/15 mx-[1px]" />
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.currentTarget.blur();
-                setRomanization(!romanization);
-              }}
-              aria-label={t("settings.lyrics_romanization.title")}
-              aria-pressed={romanization}
-              title={t("settings.lyrics_romanization.title")}
-              className={cn(
-                "w-[26px] h-[26px] min-w-[26px] min-h-[26px] max-h-[26px] rounded-md flex items-center justify-center hover:bg-white/10 active:scale-95 transition-all border-none bg-transparent cursor-pointer",
-                romanization ? "text-white" : "text-white/70 hover:text-white",
-              )}
-            >
-              {romanization ? (
-                <TranslateFill size={14} />
-              ) : (
-                <TranslateLine size={14} />
-              )}
-            </button>
-          </>
-        )}
+        <RomanizationToggle />
 
         {!isCurrentPlain && (
           <>
