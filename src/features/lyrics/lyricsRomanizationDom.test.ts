@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Lyric } from "@braccato/parsers";
+import type { LineData } from "@braccato/core";
 import { syncRomanization } from "./hooks/useLyricsRomanization";
 
 const ROMANIZED = ".blyrics--romanized";
@@ -16,7 +17,10 @@ function fakeView(lyrics: Lyric[]) {
   });
   const scheduleLyricPositionUpdate = vi.fn();
   const el = {
-    renderer: { lines, scheduleLyricPositionUpdate },
+    renderer: {
+      lines: lines as unknown as LineData[],
+      scheduleLyricPositionUpdate,
+    },
     isConnected: true,
   };
   return { el, lines, scheduleLyricPositionUpdate };

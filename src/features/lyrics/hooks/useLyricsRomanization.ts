@@ -1,20 +1,36 @@
 import { useEffect, type RefObject } from "react";
-import { injectRomanization } from "@braccato/core";
+import { injectRomanization, type LineData } from "@braccato/core";
 import { ROMANIZED_LYRICS_CLASS } from "@braccato/core/constants";
 import type { Lyric } from "@braccato/parsers";
 import { romanizeLyrics } from "../engine/lyricsRomanization";
 
 const LYRICS_LOADED_EVENT = "braccato:lyrics-loaded";
 
-export function syncRomanization(el: any, lyrics: Lyric[], enabled: boolean) {
-  const renderer = el.renderer;
+interface RomanizationRenderer {
+  lines: readonly LineData[];
+  scheduleLyricPositionUpdate(
+    isTicking: () => boolean,
+    retick: () => void,
+  ): void;
+}
+
+export interface RomanizationHost {
+  renderer: RomanizationRenderer | null;
+  isConnected?: boolean;
+}
+
+export function syncRomanization(
+  host: RomanizationHost,
+  lyrics: Lyric[],
+  enabled: boolean,
+) {
+  const renderer = host.renderer;
   if (!renderer) return;
-  const lines: readonly any[] = renderer.lines;
+  const lines = renderer.lines;
   let changed = false;
 
   if (enabled) {
     const texts = romanizeLyrics(lyrics);
-    // Each lyric builds exactly one line; anything else means the view is mid-rebuild.
     if (texts.length !== lines.length) return;
     lines.forEach((line, i) => {
       const text = texts[i];
@@ -36,14 +52,14 @@ export function syncRomanization(el: any, lyrics: Lyric[], enabled: boolean) {
 
   if (changed) {
     renderer.scheduleLyricPositionUpdate(
-      () => el.isConnected,
+      () => host.isConnected !== false,
       () => {},
     );
   }
 }
 
 export function useLyricsRomanization(
-  elementRef: RefObject<any>,
+  elementRef: RefObject<(HTMLElement & RomanizationHost) | null>,
   lyrics: Lyric[],
   enabled: boolean,
 ) {
