@@ -120,6 +120,7 @@
     "@tanstack/react-virtual": "^3.14.22",
     "@xhayper/discord-rpc": "^1.5.1",
     "bgutils-js": "4.0.3",
+    "chinese-conv": "^4.0.0",
     "clsx": "^2.1.1",
     "electron-updater": "^6.8.11",
     "framer-motion": "^12.38.0",

@@ -151,3 +151,71 @@ describe("hasRomanizableLyrics", () => {
     expect(hasRomanizableLyrics([])).toBe(false);
   });
 });
+
+describe("song language rules for chinese characters", () => {
+  const line = (words: string): Lyric => ({
+    startTimeMs: 0,
+    durationMs: 1000,
+    words,
+  });
+
+  it("keeps pinyin when a chinese song has one short japanese line", () => {
+    const chinese = Array.from({ length: 8 }, () => line("月亮代表我的心"));
+    const result = romanizeLyrics([...chinese, line("ありがとう")]);
+    expect(result.slice(0, 8)).toEqual(
+      Array(8).fill("yuè liàng dài biǎo wǒ de xīn"),
+    );
+    expect(result[8]).toBeNull();
+    expect(hasRomanizableLyrics([...chinese, line("ありがとう")])).toBe(true);
+  });
+
+  it("treats a song as japanese once kana is a large share of its text", () => {
+    const song = [line("夜に駆ける"), line("愛してる"), line("君")];
+    expect(romanizeLyrics(song)).toEqual([null, null, null]);
+    expect(hasRomanizableLyrics(song)).toBe(false);
+  });
+
+  it("skips pinyin for songs written in colloquial cantonese", () => {
+    const song = [line("你嘅愛"), line("唔好走")];
+    expect(romanizeLyrics(song)).toEqual([null, null]);
+    expect(hasRomanizableLyrics(song)).toBe(false);
+  });
+
+  it("does not take one cantonese character as a sign of cantonese", () => {
+    expect(romanizeLyrics([line("我爱你"), line("佢")])[0]).toBe("wǒ ài nǐ");
+  });
+
+  it("does not mistake the mandarin word 關係 for cantonese", () => {
+    expect(romanizeLine("我們的關係")).toBe("wǒ men de guān xì");
+    expect(hasRomanizableLyrics([line("我們的關係"), line("關係")])).toBe(true);
+  });
+});
+
+describe("traditional chinese characters", () => {
+  it("reads common neutral-tone words the same as simplified", () => {
+    expect(romanizeLine("什麼")).toBe(romanizeLine("什么"));
+    expect(romanizeLine("什麼")).toBe("shén me");
+    expect(romanizeLine("你愛我嗎")).toBe("nǐ ài wǒ ma");
+    expect(romanizeLine("我們")).toBe("wǒ men");
+  });
+
+  it("picks the right reading for common traditional words", () => {
+    expect(romanizeLine("時間")).toBe("shí jiān");
+    expect(romanizeLine("長大")).toBe("zhǎng dà");
+    expect(romanizeLine("音樂")).toBe("yīn yuè");
+    expect(romanizeLine("因為你")).toBe("yīn wèi nǐ");
+    expect(romanizeLine("還是你")).toBe("hái shì nǐ");
+    expect(romanizeLine("為你")).toBe("wèi nǐ");
+  });
+
+  it("handles traditional polyphonic place and bank names", () => {
+    expect(romanizeLine("重慶很重要")).toBe("chóng qìng hěn zhòng yào");
+    expect(romanizeLine("銀行行長")).toBe("yín háng háng zhǎng");
+  });
+
+  it("keeps latin words in a traditional line", () => {
+    expect(romanizeLine("因為你讓我看見forever")).toBe(
+      "yīn wèi nǐ ràng wǒ kàn jiàn forever",
+    );
+  });
+});
