@@ -1,8 +1,22 @@
 import React from "react";
-import { describe, it, expect } from "vitest";
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import { toClientTrack } from "./track";
 
 describe("toClientTrack", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe() {}
+        disconnect() {}
+      },
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("maps backend track properly", () => {
     const backend = {
       id: "4IbRT6Vfl_U",
