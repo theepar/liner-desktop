@@ -20,6 +20,15 @@ describe("romanizeLine", () => {
     );
   });
 
+  it("keeps punctuation, symbols and emoji that the romanizer cannot take", () => {
+    expect(romanizeLine("사랑해…")).toBe("saranghae…");
+    expect(romanizeLine("난 ’그냥’ 좋아")).toBe("nan ’geunyang’ joha");
+    expect(romanizeLine("사랑♪ 😍")).toBe("sarang♪ 😍");
+    expect(romanizeLine("사랑해 — 정말")).toBe("saranghae — jeongmal");
+    expect(romanizeLine("韓國 사랑")).toBe("韓國 sarang");
+    expect(romanizeLine("Café 사랑")).toBe("Café sarang");
+  });
+
   it("skips lines with nothing to romanize", () => {
     expect(romanizeLine("Bloodshot eyes tonight")).toBeNull();
     expect(romanizeLine("   ")).toBeNull();
