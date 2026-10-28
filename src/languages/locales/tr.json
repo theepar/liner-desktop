@@ -801,7 +801,7 @@
     },
     "lyrics_romanization": {
       "title": "Şarkı sözlerini romanize et",
-      "description": "Korece şarkı sözlerini her satırın altında Latin harfleriyle gösterir."
+      "description": "Korece ve Çince şarkı sözlerini her satırın altında Latin harfleriyle gösterir."
     }
   },
   "toast": {

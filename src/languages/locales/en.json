@@ -962,7 +962,7 @@
     },
     "lyrics_romanization": {
       "title": "Romanize lyrics",
-      "description": "Show Korean lyrics in Latin letters under each line."
+      "description": "Show Korean and Chinese lyrics in Latin letters under each line."
     }
   },
   "toast": {

@@ -801,7 +801,7 @@
     },
     "lyrics_romanization": {
       "title": "Romanizza i testi",
-      "description": "Mostra i testi coreani in caratteri latini sotto ogni riga."
+      "description": "Mostra i testi coreani e cinesi in caratteri latini sotto ogni riga."
     }
   },
   "toast": {

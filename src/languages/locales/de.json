@@ -746,7 +746,7 @@
     },
     "lyrics_romanization": {
       "title": "Liedtexte romanisieren",
-      "description": "Zeigt koreanische Liedtexte in lateinischer Schrift unter jeder Zeile an."
+      "description": "Zeigt koreanische und chinesische Liedtexte in lateinischer Schrift unter jeder Zeile an."
     }
   },
   "toast": {

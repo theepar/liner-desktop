@@ -1,10 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import type { Lyric } from "@braccato/parsers";
 import {
   hasRomanizableLyrics,
+  loadRomanizers,
   romanizeLine,
   romanizeLyrics,
 } from "./engine/lyricsRomanization";
+
+beforeAll(async () => {
+  await loadRomanizers([{ startTimeMs: 0, durationMs: 1000, words: "我爱你" }]);
+});
 
 describe("romanizeLine", () => {
   it("romanizes hangul following pronunciation rules", () => {
@@ -36,9 +41,30 @@ describe("romanizeLine", () => {
     expect(romanizeLine("♪")).toBeNull();
   });
 
-  it("leaves japanese and chinese lines alone", () => {
+  it("leaves japanese lines alone", () => {
     expect(romanizeLine("ありがとう")).toBeNull();
-    expect(romanizeLine("我爱你")).toBeNull();
+    expect(romanizeLine("カタカナ")).toBeNull();
+  });
+
+  it("romanizes chinese as pinyin with tone marks", () => {
+    expect(romanizeLine("我爱你")).toBe("wǒ ài nǐ");
+    expect(romanizeLine("我愛你")).toBe("wǒ ài nǐ");
+    expect(romanizeLine("月亮代表我的心")).toBe("yuè liàng dài biǎo wǒ de xīn");
+  });
+
+  it("picks the right reading for polyphonic characters", () => {
+    expect(romanizeLine("银行行长")).toBe("yín háng háng zhǎng");
+    expect(romanizeLine("重庆很重要")).toBe("chóng qìng hěn zhòng yào");
+  });
+
+  it("keeps latin words and tidies spacing around punctuation in chinese", () => {
+    expect(romanizeLine("晴天 sunny day")).toBe("qíng tiān sunny day");
+    expect(romanizeLine("你说你爱我…")).toBe("nǐ shuō nǐ ài wǒ…");
+    expect(romanizeLine("我不想说再见，")).toBe("wǒ bù xiǎng shuō zài jiàn，");
+  });
+
+  it("skips chinese when told the song is japanese", () => {
+    expect(romanizeLine("我爱你", false)).toBeNull();
   });
 });
 
@@ -67,6 +93,26 @@ describe("romanizeLyrics", () => {
     const instrumental = { ...line("마지막"), isInstrumental: true } as Lyric;
     expect(romanizeLyrics([instrumental])).toEqual([null]);
   });
+
+  it("romanizes a chinese song", () => {
+    expect(romanizeLyrics([line("我爱你"), line("La la la")])).toEqual([
+      "wǒ ài nǐ",
+      null,
+    ]);
+  });
+
+  it("does not read kanji as pinyin in a japanese song", () => {
+    expect(
+      romanizeLyrics([line("夜に駆ける"), line("愛してる"), line("君")]),
+    ).toEqual([null, null, null]);
+  });
+
+  it("handles korean and chinese lines in the same song", () => {
+    expect(romanizeLyrics([line("사랑해"), line("我爱你")])).toEqual([
+      "saranghae",
+      "wǒ ài nǐ",
+    ]);
+  });
 });
 
 describe("hasRomanizableLyrics", () => {
@@ -74,6 +120,14 @@ describe("hasRomanizableLyrics", () => {
     startTimeMs: 0,
     durationMs: 1000,
     words,
+  });
+
+  it("is true for a chinese song", () => {
+    expect(hasRomanizableLyrics([line("Hello"), line("我爱你")])).toBe(true);
+  });
+
+  it("is false for a japanese song even when it has kanji-only lines", () => {
+    expect(hasRomanizableLyrics([line("夜に駆ける"), line("君")])).toBe(false);
   });
 
   it("is true when any line has hangul", () => {

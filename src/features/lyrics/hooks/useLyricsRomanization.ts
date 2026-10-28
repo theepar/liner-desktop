@@ -2,7 +2,7 @@ import { useEffect, type RefObject } from "react";
 import { injectRomanization, type LineData } from "@braccato/core";
 import { ROMANIZED_LYRICS_CLASS } from "@braccato/core/constants";
 import type { Lyric } from "@braccato/parsers";
-import { romanizeLyrics } from "../engine/lyricsRomanization";
+import { loadRomanizers, romanizeLyrics } from "../engine/lyricsRomanization";
 import { useLyricsDisplayStore } from "../store/lyricsDisplayStore";
 
 const LYRICS_LOADED_EVENT = "braccato:lyrics-loaded";
@@ -68,9 +68,20 @@ export function useLyricsRomanization(
   useEffect(() => {
     const el = elementRef.current;
     if (!el) return;
-    const sync = () => syncRomanization(el, lyrics, enabled);
+    let cancelled = false;
+    const sync = () => {
+      const ready = enabled ? loadRomanizers(lyrics) : Promise.resolve();
+      ready
+        .then(() => {
+          if (!cancelled) syncRomanization(el, lyrics, enabled);
+        })
+        .catch(() => undefined);
+    };
     sync();
     el.addEventListener(LYRICS_LOADED_EVENT, sync);
-    return () => el.removeEventListener(LYRICS_LOADED_EVENT, sync);
+    return () => {
+      cancelled = true;
+      el.removeEventListener(LYRICS_LOADED_EVENT, sync);
+    };
   }, [elementRef, lyrics, enabled]);
 }
