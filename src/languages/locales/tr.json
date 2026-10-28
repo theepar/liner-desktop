@@ -801,7 +801,15 @@
     },
     "lyrics_romanization": {
       "title": "Şarkı sözlerini romanize et",
-      "description": "Korece, Çince ve Japonca şarkı sözlerini her satırın altında Latin harfleriyle gösterir."
+      "description": "Korece, Çince ve Japonca şarkı sözlerini her satırın altında Latin harfleriyle gösterir.",
+      "language": "Bu şarkının okuma dili",
+      "mode_auto": "Otomatik",
+      "mode_ja": "Japonca",
+      "mode_zh": "Mandarin",
+      "mode_off": "Atla",
+      "loading": "Yükleniyor…",
+      "failed": "Okunuş kullanılamıyor",
+      "retry": "Tekrar dene"
     }
   },
   "toast": {

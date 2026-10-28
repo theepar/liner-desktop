@@ -5,6 +5,7 @@ import { cn } from "@/shared/lib";
 import { hasRomanizableLyrics } from "../engine/lyricsRomanization";
 import { useLyricsDisplayStore } from "../store/lyricsDisplayStore";
 import { useLyricsStore } from "../store/lyricsStore";
+import { RomanizationOptions } from "./RomanizationOptions";
 
 export function RomanizationToggle() {
   const { t } = useTranslation();
@@ -12,7 +13,9 @@ export function RomanizationToggle() {
   const romanization = useLyricsDisplayStore((s) => s.romanization);
   const setRomanization = useLyricsDisplayStore((s) => s.setRomanization);
   const canRomanize = useMemo(
-    () => hasRomanizableLyrics(braccatoLyrics),
+    () =>
+      hasRomanizableLyrics(braccatoLyrics) ||
+      hasRomanizableLyrics(braccatoLyrics, "ja"),
     [braccatoLyrics],
   );
 
@@ -45,6 +48,7 @@ export function RomanizationToggle() {
           <TranslateLine size={14} />
         )}
       </button>
+      {romanization && <RomanizationOptions lyrics={braccatoLyrics} />}
     </>
   );
 }

@@ -20,7 +20,8 @@ If you change what the app sends, update this file in the same pull request.
   paths, not their tags (except to Discord, see below).
 - **Lyric romanization runs locally.** Korean, Mandarin and Japanese readings are
   generated on your device. The Japanese dictionary ships with the app; no lyrics
-  are sent to a romanization service.
+  are sent to a romanization service. Reading-language choices are saved locally
+  for each song and version of its lyrics; these preferences are not sent off-device.
 - **There is no hardware or device identifier.** Every id the app generates is a random
   UUID per request, per session or per sign-in.
 

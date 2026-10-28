@@ -5,6 +5,11 @@ import {
   getLineLanguage,
   type HanLanguage,
 } from "./lyricsLanguage";
+import {
+  isInstrumental,
+  providedRomanization,
+  type RomanizationMode,
+} from "./romanizationPreference";
 
 type Pinyin = typeof import("pinyin-pro").pinyin;
 type ToSimplified = typeof import("chinese-conv").sify;
@@ -33,10 +38,14 @@ function romanizeChinese(text: string): string | null {
     .replace(SPACE_AFTER_OPENING, "$1");
 }
 
-export async function loadRomanizers(lyrics: readonly Lyric[]): Promise<void> {
-  const hanLanguage = getHanLanguage(lyrics);
+export async function loadRomanizers(
+  lyrics: readonly Lyric[],
+  mode: RomanizationMode = "auto",
+): Promise<void> {
+  if (mode === "off") return;
+  const hanLanguage = getHanLanguage(lyrics, mode);
   const languages = lyrics.map((line) =>
-    (line as { isInstrumental?: boolean }).isInstrumental
+    isInstrumental(line) || providedRomanization(line)
       ? null
       : getLineLanguage(line.words, hanLanguage),
   );
@@ -85,18 +94,28 @@ export function romanizeLine(
   }
 }
 
-export function hasRomanizableLyrics(lyrics: readonly Lyric[]): boolean {
-  const hanLanguage = getHanLanguage(lyrics);
+export function hasRomanizableLyrics(
+  lyrics: readonly Lyric[],
+  mode: RomanizationMode = "auto",
+): boolean {
+  if (mode === "off") return false;
+  const hanLanguage = getHanLanguage(lyrics, mode);
   return lyrics.some(
-    (line) => getLineLanguage(line.words, hanLanguage) !== null,
+    (line) =>
+      !isInstrumental(line) &&
+      (providedRomanization(line) !== null ||
+        getLineLanguage(line.words, hanLanguage) !== null),
   );
 }
 
-export function romanizeLyrics(lyrics: readonly Lyric[]): (string | null)[] {
-  const hanLanguage = getHanLanguage(lyrics);
+export function romanizeLyrics(
+  lyrics: readonly Lyric[],
+  mode: RomanizationMode = "auto",
+): (string | null)[] {
+  const hanLanguage = getHanLanguage(lyrics, mode);
   return lyrics.map((line) =>
-    (line as { isInstrumental?: boolean }).isInstrumental
+    mode === "off" || isInstrumental(line)
       ? null
-      : romanizeLine(line.words, hanLanguage),
+      : (providedRomanization(line) ?? romanizeLine(line.words, hanLanguage)),
   );
 }

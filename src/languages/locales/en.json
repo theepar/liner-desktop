@@ -962,7 +962,15 @@
     },
     "lyrics_romanization": {
       "title": "Romanize lyrics",
-      "description": "Show Korean, Chinese and Japanese lyrics in Latin letters under each line."
+      "description": "Show Korean, Chinese and Japanese lyrics in Latin letters under each line.",
+      "language": "Reading language for this song",
+      "mode_auto": "Auto",
+      "mode_ja": "Japanese",
+      "mode_zh": "Mandarin",
+      "mode_off": "Skip",
+      "loading": "Loading…",
+      "failed": "Readings unavailable",
+      "retry": "Try again"
     }
   },
   "toast": {
