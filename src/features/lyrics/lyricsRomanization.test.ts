@@ -63,6 +63,14 @@ describe("romanizeLine", () => {
     expect(romanizeLine("我不想说再见，")).toBe("wǒ bù xiǎng shuō zài jiàn，");
   });
 
+  it("does not leave stray spaces around symbols and brackets in chinese", () => {
+    expect(romanizeLine("我爱你~")).toBe("wǒ ài nǐ~");
+    expect(romanizeLine("啊——")).toBe("a——");
+    expect(romanizeLine("(我爱你)")).toBe("(wǒ ài nǐ)");
+    expect(romanizeLine("「我爱你」")).toBe("「wǒ ài nǐ」");
+    expect(romanizeLine("我爱你♥")).toBe("wǒ ài nǐ♥");
+  });
+
   it("skips chinese when told the song is japanese", () => {
     expect(romanizeLine("我爱你", false)).toBeNull();
   });

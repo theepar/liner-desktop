@@ -6,8 +6,9 @@ type Pinyin = typeof import("pinyin-pro").pinyin;
 
 const HANGUL_RUN = /[ᄀ-ᇿ㄰-㆏가-힯]+/g;
 const KANA = /[぀-ヿㇰ-ㇿ]/;
-const SPACE_BEFORE_CLOSING = /\s+([，。！？、；：,.!?;:…）」』】》”’])/g;
-const SPACE_AFTER_OPENING = /([（「『【《“‘])\s+/g;
+const SPACE_BEFORE_CLOSING =
+  /\s+([，。！？、；：,.!?;:…~～—）)」』】\]》”’♥♪])/g;
+const SPACE_AFTER_OPENING = /([（(「『【[《“‘])\s+/g;
 
 let pinyin: Pinyin | null = null;
 
