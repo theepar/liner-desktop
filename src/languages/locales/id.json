@@ -876,7 +876,7 @@
     },
     "lyrics_romanization": {
       "title": "Romanisasi lirik",
-      "description": "Tampilkan lirik Korea dan Mandarin dengan huruf Latin di bawah tiap baris."
+      "description": "Tampilkan lirik Korea, Mandarin, dan Jepang dengan huruf Latin di bawah tiap baris."
     }
   },
   "toast": {

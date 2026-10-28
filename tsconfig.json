@@ -24,6 +24,7 @@
     "electron",
     "vite.config.ts",
     "vite.csp.ts",
+    "vite.japanese-dictionary.ts",
     "vitest.config.ts",
     "vitest.setup.ts"
   ],

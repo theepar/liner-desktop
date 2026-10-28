@@ -72,10 +72,10 @@ export function useLyricsRomanization(
     const sync = () => {
       const ready = enabled ? loadRomanizers(lyrics) : Promise.resolve();
       ready
+        .catch(() => undefined)
         .then(() => {
           if (!cancelled) syncRomanization(el, lyrics, enabled);
-        })
-        .catch(() => undefined);
+        });
     };
     sync();
     el.addEventListener(LYRICS_LOADED_EVENT, sync);

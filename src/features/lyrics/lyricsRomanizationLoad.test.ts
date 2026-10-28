@@ -10,6 +10,10 @@ const lyric = (words: string): Lyric => ({
 describe("lazy chinese romanizer", () => {
   beforeEach(() => {
     vi.resetModules();
+    vi.doMock("./engine/japaneseRomanization", () => ({
+      prepareJapaneseLyrics: vi.fn(async () => {}),
+      readJapaneseRomanization: vi.fn(() => null),
+    }));
   });
 
   it("does not romanize chinese until the library is loaded", async () => {

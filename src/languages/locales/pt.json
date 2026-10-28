@@ -864,7 +864,7 @@
     },
     "lyrics_romanization": {
       "title": "Romanizar letras",
-      "description": "Mostra as letras em coreano e chinês com caracteres latinos abaixo de cada linha."
+      "description": "Mostra as letras em coreano, chinês e japonês com caracteres latinos abaixo de cada linha."
     }
   },
   "toast": {
